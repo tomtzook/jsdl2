@@ -18,11 +18,15 @@ public class JoystickJni {
     public static native int setEventState(int state);
 
     public static native int getDeviceType(int index);
+    public static native int getDeviceInstanceId(int index);
 
     public static native long open(int index);
     public static native void close(long ptr);
+    public static native long fromInstanceId(int id);
 
+    public static native String getName(long ptr);
     public static native int getType(long ptr);
+    public static native int getInstanceId(long ptr);
 
     public static native int getNumAxes(long ptr);
     public static native int getNumButtons(long ptr);
@@ -32,4 +36,5 @@ public class JoystickJni {
     public static native int getAxis(long ptr, int index);
     public static native int getButton(long ptr, int index);
     public static native int geHat(long ptr, int index);
+    public static native long getBall(long ptr, int index);
 }

@@ -22,6 +22,11 @@ JNIEXPORT jint JNICALL Java_sdl2_JoystickJni_getDeviceType
     return SDL_JoystickGetDeviceType(index);
 }
 
+JNIEXPORT jint JNICALL Java_sdl2_JoystickJni_getDeviceInstanceId
+        (JNIEnv *env, jclass obj, jint index){
+    return SDL_JoystickGetDeviceInstanceID(index);
+}
+
 JNIEXPORT jlong JNICALL Java_sdl2_JoystickJni_open
         (JNIEnv *env, jclass obj, jint index){
     SDL_Joystick* joystick = SDL_JoystickOpen(index);
@@ -34,10 +39,29 @@ JNIEXPORT void JNICALL Java_sdl2_JoystickJni_close
     SDL_JoystickClose(joystick);
 }
 
+JNIEXPORT jlong JNICALL Java_sdl2_JoystickJni_fromInstanceId
+    (JNIEnv *env, jclass obj, jint id){
+    SDL_Joystick* joystick = SDL_JoystickFromInstanceID(id);
+    return (jlong) joystick;
+}
+
+JNIEXPORT jstring JNICALL Java_sdl2_JoystickJni_getName
+        (JNIEnv *env, jclass obj, jlong ptr){
+    SDL_Joystick* joystick = (SDL_Joystick*) ptr;
+    const char* name = SDL_JoystickName(joystick);
+    return (*env)->NewStringUTF(env, name);
+}
+
 JNIEXPORT jint JNICALL Java_sdl2_JoystickJni_getType
         (JNIEnv *env, jclass obj, jlong ptr){
     SDL_Joystick* joystick = (SDL_Joystick*) ptr;
     return SDL_JoystickGetType(joystick);
+}
+
+JNIEXPORT jint JNICALL Java_sdl2_JoystickJni_getInstanceId
+        (JNIEnv *env, jclass obj, jlong ptr){
+    SDL_Joystick* joystick = (SDL_Joystick*) ptr;
+    return SDL_JoystickInstanceID(joystick);
 }
 
 JNIEXPORT jint JNICALL Java_sdl2_JoystickJni_getNumAxes
@@ -82,10 +106,12 @@ JNIEXPORT jint JNICALL Java_sdl2_JoystickJni_getHat
     return SDL_JoystickGetHat(joystick, index);
 }
 
-/*JNIEXPORT jint JNICALL Java_sdl2_JoystickJni_getBall0
+JNIEXPORT jlong JNICALL Java_sdl2_JoystickJni_getBall
         (JNIEnv *env, jclass obj, jlong ptr, jint index){
     SDL_Joystick* joystick = (SDL_Joystick*) ptr;
 
     int dx, dy;
-    return SDL_JoystickGetBall(joystick, index, &dx, &dy);
-}*/
+    SDL_JoystickGetBall(joystick, index, &dx, &dy);
+
+    return dx | (dy << 4);
+}

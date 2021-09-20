@@ -11,6 +11,10 @@ public class GameControllerJni {
 
     public static native long open(int index);
     public static native void close(long ptr);
+    public static native long fromInstanceId(int id);
+
+    public static native long getJoystick(long ptr);
+    public static native String getName(long ptr);
 
     public static native int getAxis(long ptr, int index);
     public static native int getButton(long ptr, int index);
