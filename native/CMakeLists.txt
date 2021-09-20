@@ -10,7 +10,6 @@ include_directories(${JNI_INCLUDE_DIRS} ${SDL2_INCLUDE_DIRS})
 
 add_library(sdl2_jni SHARED
         jni/sdl_jni.c
-        jni/gamecontroller_jni.c
         jni/joystick_jni.c
         jni/events_jni.c)
 

@@ -1,15 +1,15 @@
 package sdl2.events;
 
-public class HatMotionEvent extends Event {
+public class JAxisMotionEvent extends Event {
 
     private final int mJoystickId;
-    private final int mHat;
+    private final int mAxis;
     private final int mValue;
 
-    public HatMotionEvent(int type, int joystickId, int hat, int value) {
-        super(type);
+    public JAxisMotionEvent(int joystickId, int axis, int value) {
+        super(EventType.JOY_AXIS_MOTION);
         mJoystickId = joystickId;
-        mHat = hat;
+        mAxis = axis;
         mValue = value;
     }
 
@@ -17,8 +17,8 @@ public class HatMotionEvent extends Event {
         return mJoystickId;
     }
 
-    public int getHat() {
-        return mHat;
+    public int getAxis() {
+        return mAxis;
     }
 
     public int getValue() {

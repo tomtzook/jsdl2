@@ -1,12 +1,12 @@
 package sdl2.events;
 
-public class ButtonChangeEvent extends Event {
+public class JButtonChangeEvent extends Event {
 
     private final int mJoystickId;
     private final int mButton;
-    private final int mState;
+    private final boolean mState;
 
-    public ButtonChangeEvent(int type, int joystickId, int button, int state) {
+    public JButtonChangeEvent(int type, int joystickId, int button, boolean state) {
         super(type);
         mJoystickId = joystickId;
         mButton = button;
@@ -21,7 +21,7 @@ public class ButtonChangeEvent extends Event {
         return mButton;
     }
 
-    public int getState() {
+    public boolean getState() {
         return mState;
     }
 }

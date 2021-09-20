@@ -67,6 +67,6 @@ project.ext.FLAVORS.each { flavor ->
     tasks.cleanNatives.dependsOn deleteDirTask.get()
 
     project(':').jar.from(new File(flavorBuildDir, flavor.value['output'])) {
-        into "libs/${flavor.key}/${flavor.value['output']}"
+        into "libs/${flavor.key}"
     }
 }
