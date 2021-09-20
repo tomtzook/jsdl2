@@ -2,8 +2,10 @@ plugins {
     id 'java-library'
 }
 
-apply from: rootProject.file('dependencies.gradle')
 apply from: rootProject.file('extras.gradle')
+
+group GROUP
+version VERSION
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 
@@ -12,9 +14,12 @@ repositories {
 }
 
 dependencies {
-    testImplementation junit()
-    testImplementation mockito()
-    testImplementation hamcrest()
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.4.2'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.4.2'
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.2.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.23.4'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.23.0'
+    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
 }
 
 test {
@@ -45,7 +50,17 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-build.finalizedBy sourcesJar, javadocJar
+task jsdl2All(type: Jar, dependsOn: tasks.assemble) {
+    dependsOn sourcesJar
+    dependsOn javadocJar
+
+    archiveFileName.set('jsdl2-all.jar')
+    destinationDirectory.set(project.buildDir)
+
+    from sourceSets.main.output
+    from sourceSets.main.allSource
+    from javadoc.destinationDir
+}
 
 apply from: rootProject.file('cmake.gradle')
 
