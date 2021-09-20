@@ -1,29 +1,53 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
+plugins {
+    id 'java-library'
+}
 
-    dependencies {
-        classpath "me.champeau.gradle:jmh-gradle-plugin:0.5.0"
+apply from: rootProject.file('dependencies.gradle')
+apply from: rootProject.file('extras.gradle')
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation junit()
+    testImplementation mockito()
+    testImplementation hamcrest()
+}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+        showStackTraces true
     }
 }
 
-allprojects {
-    group = GROUP
-    version = VERSION
-
-    apply from: rootProject.file('extras.gradle')
-
-    setPropertyGlobalFile('signing.secretKeyRingFile')
+jar {
+    archiveBaseName.set(project.name)
 }
 
-subprojects {
-    buildDir = rootProject.file("build/${project.name}")
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveBaseName.set(project.name)
+    archiveClassifier.set('sources')
 
-    repositories {
-        mavenCentral()
-    }
+    from sourceSets.main.allSource
 }
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveBaseName.set(project.name)
+    archiveClassifier.set('javadoc')
+
+    from javadoc.destinationDir
+}
+
+build.finalizedBy sourcesJar, javadocJar
+
+apply from: rootProject.file('cmake.gradle')
+
+tasks.clean.dependsOn tasks.deleteBuildDirectory
+tasks.jar.dependsOn tasks.buildNatives

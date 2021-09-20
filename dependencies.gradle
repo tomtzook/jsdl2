@@ -1,19 +1,4 @@
 ext {
-    gson = {
-        return "com.google.code.gson:gson:2.8.5"
-    }
-    jmath = {
-        return "com.github.tomtzook:jmath:1.1.0"
-    }
-    javabeans = {
-        return "com.github.tomtzook:javabeans:1.4.0"
-    }
-    castle = {
-        return "com.github.tomtzook:castle:1.0.0"
-    }
-    slf4jApi = {
-        return "org.slf4j:slf4j-api:1.7.25"
-    }
     junit = {
         return ['org.junit.jupiter:junit-jupiter-engine:5.4.2',
                 'org.junit.platform:junit-platform-runner:1.2.0',
@@ -25,8 +10,5 @@ ext {
     }
     hamcrest = {
         return "org.hamcrest:hamcrest:2.1"
-    }
-    flashlibHid = {
-        return "com.flash3388.flashlib:flashlib.core.hid:3.0.0-beta.1"
     }
 }
