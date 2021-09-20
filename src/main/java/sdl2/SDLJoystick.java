@@ -23,7 +23,7 @@ public class SDLJoystick {
     /**
      * Gets the amount of connected joysticks.
      *
-     * @return amount of connected joysticks, or negative value on error.
+     * @return amount of connected joysticks.
      */
     public static native int getNumJoysticks();
 
@@ -40,10 +40,9 @@ public class SDLJoystick {
      *     to open joysticks.
      * </p>
      *
-     * @param enabled <b>true</b> to enable, <b>false</b> other
-     * @return negative value on error, 0 on success.
+     * @param enabled <b>true</b> to enable, <b>false</b> other.
      */
-    public static native int setEventPolling(boolean enabled);
+    public static native void setEventPolling(boolean enabled);
 
     /**
      * Gets whether or not event polling is enabled.
@@ -53,9 +52,9 @@ public class SDLJoystick {
      *     to open joysticks.
      * </p>
      *
-     * @return 1 if enabled, 0 if disabled, negative value on error.
+     * @return <b>true</b> if enabled, <b>false</b> if disabled.
      */
-    public static native int isEventPolling();
+    public static native boolean isEventPolling();
 
     /**
      * Get the type of a connected device.
@@ -70,7 +69,7 @@ public class SDLJoystick {
      * Get the instance id of a connected device.
      *
      * @param device index indicating the device.
-     * @return id which will indicate the device, or -1 on error.
+     * @return id which will indicate the device.
      */
     public static native int getDeviceInstanceId(int device);
 
@@ -78,7 +77,7 @@ public class SDLJoystick {
      * Opens a connected device.
      *
      * @param device index indicating the device.
-     * @return a pointer to the device structure, or 0 on error.
+     * @return a pointer to the device structure.
      */
     public static native long open(int device);
 
@@ -93,7 +92,7 @@ public class SDLJoystick {
      * Gets an open device.
      *
      * @param id id of the device to get.
-     * @return a pointer to the device structure, or 0 on error.
+     * @return a pointer to the device structure.
      */
     public static native long fromInstanceId(int id);
 
@@ -126,7 +125,7 @@ public class SDLJoystick {
      * Gets the amount of axes on an open device.
      *
      * @param ptr a pointer to the device structure.
-     * @return amount of axes, or negative value on error.
+     * @return amount of axes.
      */
     public static native int getNumAxes(long ptr);
 
@@ -134,7 +133,7 @@ public class SDLJoystick {
      * Gets the amount of buttons on an open device.
      *
      * @param ptr a pointer to the device structure.
-     * @return amount of buttons, or negative value on error.
+     * @return amount of buttons.
      */
     public static native int getNumButtons(long ptr);
 
@@ -142,7 +141,7 @@ public class SDLJoystick {
      * Gets the amount of hats on an open device.
      *
      * @param ptr a pointer to the device structure.
-     * @return amount of hats, or negative value on error.
+     * @return amount of hats.
      */
     public static native int getNumHats(long ptr);
 
@@ -150,7 +149,7 @@ public class SDLJoystick {
      * Gets the amount of balls on an open device.
      *
      * @param ptr a pointer to the device structure.
-     * @return amount of balls, or negative value on error.
+     * @return amount of balls.
      */
     public static native int getNumBalls(long ptr);
 
@@ -169,9 +168,9 @@ public class SDLJoystick {
      *
      * @param ptr a pointer to the device structure.
      * @param index index of the button, between 0 and {@link #getNumButtons(long)}.
-     * @return 1 if pressed, 0 if not pressed.
+     * @return <b>true</b> if pressed, <b>false</b> otherwise.
      */
-    public static native int getButton(long ptr, int index);
+    public static native boolean getButton(long ptr, int index);
 
     /**
      * Gets the value of an hat on an open device.

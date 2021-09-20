@@ -1,10 +1,17 @@
 #include <jni.h>
 #include <SDL.h>
 
+#include "jni_except.h"
+
 
 JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getNumJoysticks
         (JNIEnv *env, jclass obj){
-    return SDL_NumJoysticks();
+    int result = SDL_NumJoysticks();
+    if (result < 0) {
+        THROW_SDL_ERROR2(env, 0);
+    }
+
+    return result;
 }
 
 JNIEXPORT void JNICALL Java_sdl2_SDLJoystick_updateJoysticks
@@ -12,19 +19,21 @@ JNIEXPORT void JNICALL Java_sdl2_SDLJoystick_updateJoysticks
     SDL_JoystickUpdate();
 }
 
-JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_setEventPolling
+JNIEXPORT void JNICALL Java_sdl2_SDLJoystick_setEventPolling
         (JNIEnv *env, jclass obj, jboolean enabled){
-    int result = SDL_JoystickEventState(enabled ? SDL_ENABLE : SDL_DISABLE);
-    if (result < 0) {
-        return result;
+    if (SDL_JoystickEventState(enabled ? SDL_ENABLE : SDL_DISABLE) < 0) {
+        THROW_SDL_ERROR(env);
     }
-
-    return 0;
 }
 
-JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_isEventPolling
+JNIEXPORT jboolean JNICALL Java_sdl2_SDLJoystick_isEventPolling
         (JNIEnv *env, jclass obj){
-    return SDL_JoystickEventState(SDL_QUERY);
+    int result = SDL_JoystickEventState(SDL_QUERY);
+    if (result < 0) {
+        THROW_SDL_ERROR2(env, 0);
+    }
+
+    return result == SDL_ENABLE;
 }
 
 JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getDeviceType
@@ -34,12 +43,21 @@ JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getDeviceType
 
 JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getDeviceInstanceId
         (JNIEnv *env, jclass obj, jint device){
-    return SDL_JoystickGetDeviceInstanceID(device);
+    int result = SDL_JoystickGetDeviceInstanceID(device);
+    if (result < 0) {
+        THROW_SDL_ERROR2(env, 0);
+    }
+
+    return result;
 }
 
 JNIEXPORT jlong JNICALL Java_sdl2_SDLJoystick_open
         (JNIEnv *env, jclass obj, jint device){
     SDL_Joystick* joystick = SDL_JoystickOpen(device);
+    if (NULL == joystick) {
+        THROW_SDL_ERROR2(env, 0);
+    }
+
     return (jlong) joystick;
 }
 
@@ -52,6 +70,10 @@ JNIEXPORT void JNICALL Java_sdl2_SDLJoystick_close
 JNIEXPORT jlong JNICALL Java_sdl2_SDLJoystick_fromInstanceId
     (JNIEnv *env, jclass obj, jint id){
     SDL_Joystick* joystick = SDL_JoystickFromInstanceID(id);
+    if (NULL == joystick) {
+        THROW_SDL_ERROR2(env, 0);
+    }
+
     return (jlong) joystick;
 }
 
@@ -60,7 +82,7 @@ JNIEXPORT jstring JNICALL Java_sdl2_SDLJoystick_getName
     SDL_Joystick* joystick = (SDL_Joystick*) ptr;
     const char* name = SDL_JoystickName(joystick);
     if (NULL == name) {
-        return NULL;
+        THROW_SDL_ERROR2(env, NULL);
     }
 
     return (*env)->NewStringUTF(env, name);
@@ -75,31 +97,56 @@ JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getType
 JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getInstanceId
         (JNIEnv *env, jclass obj, jlong ptr){
     SDL_Joystick* joystick = (SDL_Joystick*) ptr;
-    return SDL_JoystickInstanceID(joystick);
+    SDL_JoystickID result = SDL_JoystickInstanceID(joystick);
+    if (result < 0) {
+        THROW_SDL_ERROR2(env, 0);
+    }
+
+    return result;
 }
 
 JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getNumAxes
         (JNIEnv *env, jclass obj, jlong ptr){
     SDL_Joystick* joystick = (SDL_Joystick*) ptr;
-    return SDL_JoystickNumAxes(joystick);
+    int result = SDL_JoystickNumAxes(joystick);
+    if (result < 0) {
+        THROW_SDL_ERROR2(env, 0);
+    }
+
+    return result;
 }
 
 JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getNumButtons
         (JNIEnv *env, jclass obj, jlong ptr){
     SDL_Joystick* joystick = (SDL_Joystick*) ptr;
-    return SDL_JoystickNumButtons(joystick);
+    int result = SDL_JoystickNumButtons(joystick);
+    if (result < 0) {
+        THROW_SDL_ERROR2(env, 0);
+    }
+
+    return result;
 }
 
 JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getNumHats
         (JNIEnv *env, jclass obj, jlong ptr){
     SDL_Joystick* joystick = (SDL_Joystick*) ptr;
-    return SDL_JoystickNumHats(joystick);
+    int result = SDL_JoystickNumHats(joystick);
+    if (result < 0) {
+        THROW_SDL_ERROR2(env, 0);
+    }
+
+    return result;
 }
 
 JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getNumBalls
         (JNIEnv *env, jclass obj, jlong ptr){
     SDL_Joystick* joystick = (SDL_Joystick*) ptr;
-    return SDL_JoystickNumBalls(joystick);
+    int result = SDL_JoystickNumBalls(joystick);
+    if (result < 0) {
+        THROW_SDL_ERROR2(env, 0);
+    }
+
+    return result;
 }
 
 JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getAxis
@@ -108,10 +155,11 @@ JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getAxis
     return SDL_JoystickGetAxis(joystick, index);
 }
 
-JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getButton
+JNIEXPORT jboolean JNICALL Java_sdl2_SDLJoystick_getButton
         (JNIEnv *env, jclass obj, jlong ptr, jint index){
     SDL_Joystick* joystick = (SDL_Joystick*) ptr;
-    return SDL_JoystickGetButton(joystick, index);
+    int result = SDL_JoystickGetButton(joystick, index);
+    return result == 1;
 }
 
 JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getHat

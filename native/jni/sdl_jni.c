@@ -1,10 +1,14 @@
 #include <jni.h>
 #include <SDL.h>
 
+#include "jni_except.h"
 
-JNIEXPORT jint JNICALL Java_sdl2_SDL_init
+
+JNIEXPORT void JNICALL Java_sdl2_SDL_init
         (JNIEnv *env, jclass obj, jint flags){
-    return SDL_Init(flags);
+    if (SDL_Init(flags) < 0) {
+        THROW_SDL_ERROR(env);
+    }
 }
 
 JNIEXPORT void JNICALL Java_sdl2_SDL_quit

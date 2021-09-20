@@ -21,9 +21,8 @@ public class SDL {
      * Initializes SDL. Must be called before any other use.
      *
      * @param flags initialization flags indicating subsystems.
-     * @return 0 on success, negative value on error.
      */
-    public static native int init(int flags);
+    public static native void init(int flags);
 
     /**
      * Cleans up all initialized subsystems. Should be called
