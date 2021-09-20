@@ -1,0 +1,29 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+    dependencies {
+        classpath "me.champeau.gradle:jmh-gradle-plugin:0.5.0"
+    }
+}
+
+allprojects {
+    group = GROUP
+    version = VERSION
+
+    apply from: rootProject.file('extras.gradle')
+
+    setPropertyGlobalFile('signing.secretKeyRingFile')
+}
+
+subprojects {
+    buildDir = rootProject.file("build/${project.name}")
+
+    repositories {
+        mavenCentral()
+    }
+}
