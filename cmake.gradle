@@ -69,4 +69,7 @@ project.ext.FLAVORS.each { flavor ->
     project(':').jar.from(new File(flavorBuildDir, flavor.value['output'])) {
         into "libs/${flavor.key}"
     }
+    project(':').jsdl2All.from(new File(flavorBuildDir, flavor.value['output'])) {
+        into "libs/${flavor.key}"
+    }
 }

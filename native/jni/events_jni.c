@@ -11,9 +11,9 @@ static jobject makeJoyAxisEvent(JNIEnv* env, SDL_JoyAxisEvent event) {
 
 static jobject makeJoyButtonEvent(JNIEnv* env, SDL_JoyButtonEvent event) {
     jclass class = (*env)->FindClass(env, "sdl2/events/JButtonChangeEvent");
-    jmethodID constructor = (*env)->GetMethodID(env, class, "<init>", "(IIIZ)V");
+    jmethodID constructor = (*env)->GetMethodID(env, class, "<init>", "(IIZ)V");
     return (*env)->NewObject(env, class, constructor,
-                             event.type, event.which, event.button,
+                             event.which, event.button,
                              event.state == 1);
 }
 
@@ -33,10 +33,10 @@ static jobject makeJoyBallMotionEvent(JNIEnv* env, SDL_JoyBallEvent event) {
 }
 
 static jobject makeJoyConnectionEvent(JNIEnv* env, SDL_JoyDeviceEvent event, int connected) {
-    jclass class = (*env)->FindClass(env, "sdl2/events/DeviceConnectionEvent");
-    jmethodID constructor = (*env)->GetMethodID(env, class, "<init>", "(IIZ)V");
+    jclass class = (*env)->FindClass(env, "sdl2/events/JDeviceConnectionEvent");
+    jmethodID constructor = (*env)->GetMethodID(env, class, "<init>", "(IZ)V");
     return (*env)->NewObject(env, class, constructor,
-                             event.type, event.which, connected);
+                             event.which, connected);
 }
 
 static jobject makeEventObject(JNIEnv* env, SDL_Event event) {

@@ -1,12 +1,12 @@
 package sdl2.events;
 
-public class DeviceConnectionEvent extends Event {
+public class JDeviceConnectionEvent extends Event {
 
     private final int mDeviceIndex;
     private final boolean mIsConnected;
 
-    public DeviceConnectionEvent(int type, int deviceIndex, boolean isConnected) {
-        super(type);
+    public JDeviceConnectionEvent(int deviceIndex, boolean isConnected) {
+        super(isConnected ? EventType.JOY_DEVICE_ADDED : EventType.JOY_DEVICE_REMOVED);
         mDeviceIndex = deviceIndex;
         mIsConnected = isConnected;
     }
