@@ -11,9 +11,9 @@
     return ret
 
 
-void throw_out_of_memory(JNIEnv *env, const char* message);
+void throw_out_of_memory(JNIEnv* env, const char* message);
 
-void throw_unsupported(JNIEnv *env, const char* message);
+void throw_unsupported(JNIEnv* env, const char* message);
 
 void throw_class_not_found(JNIEnv* env, const char* className);
 

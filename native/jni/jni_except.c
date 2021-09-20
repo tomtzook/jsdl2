@@ -4,10 +4,10 @@
 #include "jni_except.h"
 
 
-void throw_out_of_memory(JNIEnv *env, const char* message) {
+void throw_out_of_memory(JNIEnv* env, const char* message) {
     jclass cls = (*env)->FindClass(env, "java/lang/OutOfMemoryError");
     if (NULL == cls) {
-        // TODO: ABORT
+        (*env)->FatalError(env, "java/lang/OutOfMemoryError not found");
         return;
     }
 
@@ -15,10 +15,10 @@ void throw_out_of_memory(JNIEnv *env, const char* message) {
     // TODO: returns an error
 }
 
-void throw_unsupported(JNIEnv *env, const char* message) {
+void throw_unsupported(JNIEnv* env, const char* message) {
     jclass cls = (*env)->FindClass(env, "java/lang/UnsupportedOperationException");
     if (NULL == cls) {
-        // TODO: ABORT
+        (*env)->FatalError(env, "java/lang/UnsupportedOperationException not found");
         return;
     }
 
@@ -29,7 +29,7 @@ void throw_unsupported(JNIEnv *env, const char* message) {
 void throw_class_not_found(JNIEnv* env, const char* className) {
     jclass cls = (*env)->FindClass(env, "java/lang/NoClassDefFoundError");
     if (NULL == cls) {
-        // TODO: ABORT
+        (*env)->FatalError(env, "java/lang/NoClassDefFoundError not found");
         return;
     }
 
