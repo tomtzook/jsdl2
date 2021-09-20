@@ -191,7 +191,7 @@ public class SDLJoystick {
      *      <li>{@link #HAT_DOWN_LEFT}</li>
      *  </ul>
      */
-    public static native int geHat(long ptr, int index);
+    public static native int getHat(long ptr, int index);
 
     /**
      * Gets the value of an ball on an open device.
