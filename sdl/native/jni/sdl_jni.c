@@ -2,7 +2,7 @@
 #include <SDL.h>
 
 
-JNIEXPORT jint JNICALL Java_sdl2_SdlJni_init0
+JNIEXPORT jint JNICALL Java_sdl2_SdlJni_init
         (JNIEnv *env, jclass obj, jint flags){
     return SDL_Init(flags);
 }
