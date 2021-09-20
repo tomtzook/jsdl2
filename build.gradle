@@ -7,6 +7,17 @@ apply from: rootProject.file('extras.gradle')
 group GROUP
 version VERSION
 
+ext.FLAVORS = [
+        'linux-x86_64': [
+                'toolchain': null,
+                'output': 'libsdl2_jni.so'
+        ],
+        'windows-x86_64': [
+                'toolchain': 'platforms/x86_64-mingw-gcc.cmake',
+                'output': 'libsdl2_jni.dll'
+        ]
+]
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
@@ -64,5 +75,5 @@ task jsdl2All(type: Jar, dependsOn: tasks.assemble) {
 
 apply from: rootProject.file('cmake.gradle')
 
-tasks.clean.dependsOn tasks.deleteBuildDirectory
+tasks.clean.dependsOn tasks.cleanNatives
 tasks.jar.dependsOn tasks.buildNatives

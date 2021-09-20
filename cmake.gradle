@@ -1,9 +1,12 @@
+def BUILD_DIR = new File(project.buildDir, 'cmake')
+def CMAKE_FILE = project.file('native/CMakeLists.txt')
 
-def getToolchainFile() {
-    if (project.hasProperty('TOOLCHAIN')) {
-        return "-DCMAKE_TOOLCHAIN_FILE=${rootProject.file(project.property('TOOLCHAIN'))}"
+def getToolchainFile(def platformFileName) {
+    if (platformFileName == null) {
+        return null
     }
-    return null
+
+    return "-DCMAKE_TOOLCHAIN_FILE=${rootProject.file(platformFileName)}"
 }
 
 def getAdditionalProperties() {
@@ -13,42 +16,57 @@ def getAdditionalProperties() {
     return null
 }
 
-def BUILD_DIR = new File(project.buildDir, 'cmake')
-def CMAKE_FILE = project.file('native/CMakeLists.txt')
-
-task deleteBuildDirectory(type: Delete) {
-    delete BUILD_DIR.absolutePath
-}
-
-task createBuildDirectory(type: Exec, dependsOn: deleteBuildDirectory) {
-    commandLine 'mkdir', '-p', BUILD_DIR.absolutePath
-}
-
-task runCmake(type: Exec, dependsOn: createBuildDirectory) {
-    workingDir BUILD_DIR.absolutePath
-
-    def cmd = ['cmake']
-
-    def toolchainFile = getToolchainFile()
-    if (toolchainFile != null) {
-        cmd.add toolchainFile
-    }
-
-    def additionalProperties = getAdditionalProperties()
-    if (additionalProperties != null) {
-        cmd.add additionalProperties
-    }
-
-    cmd.add CMAKE_FILE.parentFile.absolutePath
-
-    commandLine cmd
-}
-
-task runMake(type: Exec, dependsOn: runCmake) {
-    workingDir BUILD_DIR.absolutePath
-    commandLine 'make'
-}
-
 task buildNatives {
-    dependsOn tasks.runMake
+}
+
+task cleanNatives {
+}
+
+project.ext.FLAVORS.each { flavor ->
+    def flavorBuildDir = new File(BUILD_DIR, flavor.key);
+
+    def deleteDirTask = project.tasks.register("deleteBuildDirectory$flavor.key", Delete) {
+        delete flavorBuildDir.absolutePath
+    }
+
+    def buildDirTask = project.tasks.register("createBuildDirectory$flavor.key", Exec) {
+        dependsOn deleteDirTask.get()
+        commandLine 'mkdir', '-p', flavorBuildDir.absolutePath
+    }
+
+    def runCmakeTask = project.tasks.register("runCmake$flavor.key", Exec) {
+        dependsOn buildDirTask.get()
+
+        workingDir flavorBuildDir.absolutePath
+
+        def cmd = ['cmake']
+
+        def toolchainFile = getToolchainFile(flavor.value['toolchain'])
+        if (toolchainFile != null) {
+            cmd.add toolchainFile
+        }
+
+        def additionalProperties = getAdditionalProperties()
+        if (additionalProperties != null) {
+            cmd.add additionalProperties
+        }
+
+        cmd.add CMAKE_FILE.parentFile.absolutePath
+
+        commandLine cmd
+    }
+
+    def runMakeTask = project.tasks.register("runMake$flavor.key", Exec) {
+        dependsOn runCmakeTask.get()
+
+        workingDir flavorBuildDir.absolutePath
+        commandLine 'make'
+    }
+
+    tasks.buildNatives.dependsOn runMakeTask.get()
+    tasks.cleanNatives.dependsOn deleteDirTask.get()
+
+    project(':').jar.from(new File(flavorBuildDir, flavor.value['output'])) {
+        into "libs/${flavor.key}/${flavor.value['output']}"
+    }
 }
