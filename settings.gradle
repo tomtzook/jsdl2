@@ -1,0 +1,4 @@
+rootProject.name = 'flashlib-plugins'
+
+include 'sdl'
+include 'testapp'

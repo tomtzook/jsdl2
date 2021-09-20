@@ -1,0 +1,13 @@
+plugins {
+    id 'application'
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+
+dependencies {
+    implementation project(':sdl')
+}
+
+application {
+    mainClassName = 'test.Main'
+}
