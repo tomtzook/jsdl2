@@ -26,31 +26,50 @@ void throw_unsupported(JNIEnv* env, const char* message) {
     // TODO: returns an error
 }
 
-void throw_class_not_found(JNIEnv* env, const char* className) {
+void throw_class_not_found(JNIEnv* env, const char* name) {
     jclass cls = (*env)->FindClass(env, "java/lang/NoClassDefFoundError");
     if (NULL == cls) {
         (*env)->FatalError(env, "java/lang/NoClassDefFoundError not found");
         return;
     }
 
-    (*env)->ThrowNew(env, cls, className);
+    (*env)->ThrowNew(env, cls, name);
     // TODO: returns an error
 }
 
-void throw_method_not_found(JNIEnv* env, const char* methodName, const char* signature) {
+void throw_method_not_found(JNIEnv* env, const char* name, const char* signature) {
     jclass cls = get_class(env, "java/lang/NoSuchMethodError");
     if (NULL == cls) {
         return;
     }
 
-    size_t messageSize = strlen(methodName) + strlen(signature) + 1;
+    size_t messageSize = strlen(name) + strlen(signature) + 1;
     char* messageBuffer = (char*) malloc(messageSize);
     if (NULL == messageBuffer) {
         throw_out_of_memory(env, "throw_method_not_found");
         return;
     }
 
-    sprintf(messageBuffer, "%s.%s", methodName, signature);
+    sprintf(messageBuffer, "%s.%s", name, signature);
+
+    (*env)->ThrowNew(env, cls, messageBuffer);
+    free(messageBuffer);
+}
+
+void throw_field_not_found(JNIEnv* env, const char* name, const char* signature) {
+    jclass cls = get_class(env, "java/lang/NoSuchFieldError");
+    if (NULL == cls) {
+        return;
+    }
+
+    size_t messageSize = strlen(name) + strlen(signature) + 1;
+    char* messageBuffer = (char*) malloc(messageSize);
+    if (NULL == messageBuffer) {
+        throw_out_of_memory(env, "throw_field_not_found");
+        return;
+    }
+
+    sprintf(messageBuffer, "%s.%s", name, signature);
 
     (*env)->ThrowNew(env, cls, messageBuffer);
     free(messageBuffer);

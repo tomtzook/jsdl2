@@ -26,3 +26,17 @@ jmethodID get_method(JNIEnv* env, jclass cls, const char* name, const char* sign
 jmethodID get_constructor(JNIEnv* env, jclass cls, const char* signature) {
     return get_method(env, cls, "<init>", signature);
 }
+
+jfieldID get_static_field(JNIEnv* env, jclass cls, const char* name, const char* signature) {
+    jfieldID field = (*env)->GetStaticFieldID(env, cls, name, signature);
+    if (NULL == field) {
+        throw_field_not_found(env, name, signature);
+        return NULL;
+    }
+
+    return field;
+}
+
+jobject get_static_object_value(JNIEnv* env, jclass cls, jfieldID field) {
+    return (*env)->GetStaticObjectField(env, cls, field);
+}

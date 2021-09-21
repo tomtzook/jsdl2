@@ -15,8 +15,10 @@ void throw_out_of_memory(JNIEnv* env, const char* message);
 
 void throw_unsupported(JNIEnv* env, const char* message);
 
-void throw_class_not_found(JNIEnv* env, const char* className);
+void throw_class_not_found(JNIEnv* env, const char* name);
 
-void throw_method_not_found(JNIEnv* env, const char* methodName, const char* signature);
+void throw_method_not_found(JNIEnv* env, const char* name, const char* signature);
+
+void throw_field_not_found(JNIEnv* env, const char* name, const char* signature);
 
 void throw_sdl_exception(JNIEnv* env);

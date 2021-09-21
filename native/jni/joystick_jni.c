@@ -2,6 +2,7 @@
 #include <SDL.h>
 
 #include "jni_except.h"
+#include "sdl_ex.h"
 
 
 JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getNumJoysticks
@@ -36,9 +37,10 @@ JNIEXPORT jboolean JNICALL Java_sdl2_SDLJoystick_isEventPolling
     return result == SDL_ENABLE;
 }
 
-JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getDeviceType
+JNIEXPORT jobject JNICALL Java_sdl2_SDLJoystick_getDeviceType
         (JNIEnv *env, jclass obj, jint device){
-    return SDL_JoystickGetDeviceType(device);
+    SDL_JoystickType type = SDL_JoystickGetDeviceType(device);
+    return joystick_type_to_java(env, type);
 }
 
 JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getDeviceInstanceId
@@ -88,10 +90,11 @@ JNIEXPORT jstring JNICALL Java_sdl2_SDLJoystick_getName
     return (*env)->NewStringUTF(env, name);
 }
 
-JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getType
+JNIEXPORT jobject JNICALL Java_sdl2_SDLJoystick_getType
         (JNIEnv *env, jclass obj, jlong ptr){
     SDL_Joystick* joystick = (SDL_Joystick*) ptr;
-    return SDL_JoystickGetType(joystick);
+    SDL_JoystickType type = SDL_JoystickGetType(joystick);
+    return joystick_type_to_java(env, type);
 }
 
 JNIEXPORT jint JNICALL Java_sdl2_SDLJoystick_getInstanceId

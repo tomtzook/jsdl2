@@ -60,10 +60,9 @@ public class SDLJoystick {
      * Get the type of a connected device.
      *
      * @param device index indicating the device.
-     * @return an integer value indicating the type. Use
-     *      {@link JoystickType#fromRaw(int)} to get the enum value.
+     * @return {@link JoystickType} type of device.
      */
-    public static native int getDeviceType(int device);
+    public static native JoystickType getDeviceType(int device);
 
     /**
      * Get the instance id of a connected device.
@@ -108,10 +107,9 @@ public class SDLJoystick {
      * Gets the type of the open device.
      *
      * @param ptr a pointer to the device structure.
-     * @return an integer value indicating the type. Use
-     *    {@link JoystickType#fromRaw(int)} to get the enum value.
+     * @return {@link JoystickType} type of device.
      */
-    public static native int getType(long ptr);
+    public static native JoystickType getType(long ptr);
 
     /**
      * Gets the id associated with an open device.

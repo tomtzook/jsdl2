@@ -8,10 +8,6 @@ public abstract class Event {
         mType = type;
     }
 
-    public Event(int type) {
-        this(EventType.fromRawValue(type));
-    }
-
     public EventType getType() {
         return mType;
     }
