@@ -6,15 +6,12 @@ Java bindings for SDL2
 
 Initializing SDL:
 ```java
-if (SDL.init(SDL.INIT_JOYSTICK) < 0) {
-    // error
-    System.err.printf("SDL.init error: %s\n", SDL.getError());
-    System.exit(1);    
+SDL.init(SDL.INIT_JOYSTICK)
+try {
+    // use SDL
+} finally {
+    SDL.quit();    
 }
-
-// use SDL
-
-SDL.quit();
 ```
 
 Handling Events:
@@ -38,10 +35,6 @@ switch (event.getType()){
 Using the Joystick subsystem:
 ```java
 long ptr = SDLJoystick.open(0);
-if (ptr == 0) {
-    System.err.printf("Error opening device: %s\n", SDL.getError());
-    return;
-}
 
 System.out.printf("Joystick %s: axes=%d\n",
         SDLJoystick.getName(ptr),
