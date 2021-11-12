@@ -54,3 +54,31 @@ jobject joystick_type_to_java(JNIEnv* env, SDL_JoystickType type) {
 
     return get_static_object_value(env, cls, field);
 }
+
+SDL_GameControllerAxis gamecontroller_axis_type_from_java(JNIEnv* env, jobject jtype) {
+    jclass cls = get_class(env, "sdl2/SDLGameController$AxisType");
+    if (NULL == cls) {
+        return SDL_CONTROLLER_AXIS_INVALID;
+    }
+
+    jint ordinal = get_enum_ordinal(env, cls, jtype);
+    if (ordinal < 0 || ordinal >= SDL_CONTROLLER_AXIS_MAX) {
+        return SDL_CONTROLLER_AXIS_INVALID;
+    }
+
+    return (SDL_GameControllerAxis) ordinal;
+}
+
+SDL_GameControllerButton gamecontroller_button_type_from_java(JNIEnv* env, jobject jtype) {
+    jclass cls = get_class(env, "sdl2/SDLGameController$ButtonType");
+    if (NULL == cls) {
+        return SDL_CONTROLLER_BUTTON_INVALID;
+    }
+
+    jint ordinal = get_enum_ordinal(env, cls, jtype);
+    if (ordinal < 0 || ordinal >= SDL_CONTROLLER_AXIS_MAX) {
+        return SDL_CONTROLLER_BUTTON_INVALID;
+    }
+
+    return (SDL_GameControllerButton) ordinal;
+}
