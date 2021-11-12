@@ -15,6 +15,6 @@ add_library(sdl2_jni SHARED
         jni/jni_except.c
         jni/jni_objects.c
         jni/sdl_ex.c
-        jni/gamecontroller_jni.c)
+        jni/gamecontroller_jni.c jni/event_objects.c jni/event_objects.h)
 
 target_link_libraries(sdl2_jni ${SDL2_LIBRARIES})
