@@ -1,22 +1,27 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+    dependencies {
+        classpath 'com.github.tomtzook:castle:2.0.0-beta.3'
+        classpath files('/home/tomtzook/projects/tryouts/gradle-cmake/plugin/build/libs/plugin-1.0.0.jar')
+    }
+}
+
 plugins {
     id 'java-library'
 }
 
+apply plugin: 'gradle-cmake'
 apply from: rootProject.file('extras.gradle')
 
 group GROUP
 version VERSION
-
-ext.FLAVORS = [
-        'linux-x86_64': [
-                'toolchain': null,
-                'output': 'libsdl2_jni.so'
-        ],
-        'windows-x86_64': [
-                'toolchain': 'platforms/x86_64-mingw-gcc.cmake',
-                'output': 'libsdl2_jni.dll'
-        ]
-]
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 
@@ -45,6 +50,17 @@ test {
 
 jar {
     archiveBaseName.set(project.name)
+
+    from (cmake.outputDir.map {
+        return it.asFileTree.matching {
+            include '**/*.dll'
+            include '**/*.so'
+            exclude '**/CMakeFiles/**'
+
+        }
+    }) {
+        into 'natives'
+    }
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -73,7 +89,18 @@ task jsdl2All(type: Jar, dependsOn: tasks.assemble) {
     from javadoc.destinationDir
 }
 
-apply from: rootProject.file('cmake.gradle')
+machines.customMachines.register("mingw-gcc-x86_x64") {
+    it.toolchainFile.set(file('platforms/x86_64-mingw-gcc.cmake'))
+}
 
-tasks.clean.dependsOn tasks.cleanNatives
-tasks.jar.dependsOn tasks.buildNatives
+cmake {
+    targets {
+        sdl_jni {
+            cmakeLists.set(file('native/CMakeLists.txt'))
+            targetMachines.addAll(machines.host, machines.customMachines.'mingw-gcc-x86_x64')
+        }
+    }
+}
+
+tasks.clean.dependsOn tasks.cmakeClean
+tasks.jar.dependsOn tasks.cmakeBuild
