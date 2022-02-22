@@ -87,6 +87,16 @@ task jsdl2All(type: Jar, dependsOn: tasks.assemble) {
     from sourceSets.main.output
     from sourceSets.main.allSource
     from javadoc.destinationDir
+    from (cmake.outputDir.map {
+        return it.asFileTree.matching {
+            include '**/*.dll'
+            include '**/*.so'
+            exclude '**/CMakeFiles/**'
+
+        }
+    }) {
+        into 'natives'
+    }
 }
 
 machines.customMachines.register("mingw-gcc-x86_x64") {
