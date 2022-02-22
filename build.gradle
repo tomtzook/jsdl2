@@ -15,9 +15,11 @@ buildscript {
 
 plugins {
     id 'java-library'
+    id 'maven-publish'
+    id 'signing'
 }
 
-apply plugin: 'gradle-cmake'
+apply plugin: 'io.github.tomtzook.gradle-cmake'
 apply from: rootProject.file('extras.gradle')
 
 group GROUP
@@ -114,3 +116,64 @@ cmake {
 
 tasks.clean.dependsOn tasks.cmakeClean
 tasks.jar.dependsOn tasks.cmakeBuild
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourcesJar
+            artifact javadocJar
+
+            pom {
+                name = 'jsdl2'
+                description = 'Java Bindings for SDL2'
+                url = 'https://github.com/tomtzook/jsdl2'
+
+                licenses {
+                    license {
+                        name = 'Apache License 2.0'
+                        url = ' http://www.apache.org/licenses/LICENSE-2.0'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'tomtzook'
+                        name = 'Tom Tzook'
+                        email = 'tomtzook@gmail.com'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/tomtzook/jsdl2.git'
+                    developerConnection = 'scm:git:ssh://github.com/tomtzook/jsdl2.git'
+                    url = 'https://github.com/tomtzook/jsdl2'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            if (isReleaseBuild()) {
+                name = 'NexusStaging'
+                url = NEXUS_RELEASE_REPOSITORY_URL
+            } else {
+                name = 'NexusSnapshot'
+                url = NEXUS_SNAPSHOT_REPOSITORY_URL
+            }
+
+            credentials {
+                username getNexusUsername()
+                password getNexusPassword()
+            }
+        }
+    }
+}
+
+if (shouldSign()) {
+    signing {
+        sign publishing.publications.mavenJava
+    }
+}
