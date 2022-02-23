@@ -101,22 +101,24 @@ task jsdl2All(type: Jar, dependsOn: tasks.assemble) {
     }
 }
 
-machines.customMachines.register("mingw-gcc-x86_x64") {
+machines.customMachines.register("windows-x86_x64") {
     it.toolchainFile.set(file('platforms/x86_64-mingw-gcc.cmake'))
 }
-machines.customMachines.register("linux-gnueabihf-gcc-arm") {
+machines.customMachines.register("linux-gnueabihf-arm") {
     it.toolchainFile.set(file('platforms/arm-linux-gnueabihf-gcc.cmake'))
 }
-machines.customMachines.register("linux-gcc-aarch64") {
+machines.customMachines.register("linux-aarch64") {
     it.toolchainFile.set(file('platforms/aarch64-linux-gnu-gcc.cmake'))
 }
+
+def compileMachineTargets = [machines.host]
+compileMachineTargets.addAll(machines.customMachines)
 
 cmake {
     targets {
         sdl_jni {
             cmakeLists.set(file('native/CMakeLists.txt'))
-            targetMachines.add(machines.host)
-            targetMachines.addAll(machines.customMachines)
+            targetMachines.addAll(compileMachineTargets)
         }
     }
 }
@@ -174,6 +176,60 @@ publishing {
             credentials {
                 username getNexusUsername()
                 password getNexusPassword()
+            }
+        }
+    }
+}
+
+compileMachineTargets.each { machine ->
+    def artifactTask = tasks.register("zipNative${machine.name}", Jar) {
+        dependsOn(tasks.cmakeBuild)
+
+        def outputDir = cmake.outputDir.dir("sdl_jni/${machine.name}")
+        from outputDir.map {
+            return it.asFileTree.matching {
+                include '**/*.dll'
+                include '**/*.so'
+                exclude '**/CMakeFiles/**'
+            }
+        }
+
+        archiveBaseName.set("${project.name}-jni-${machine.name}")
+    }
+
+    publishing {
+        publications {
+            "maven${machine.name}"(MavenPublication) {
+                artifactId = "jsdl2-jni-${machine.name}"
+
+                artifact artifactTask
+
+                pom {
+                    name = "jsdl2-jni-${machine.name}"
+                    description = 'Java Bindings for SDL2 (JNI)'
+                    url = 'https://github.com/tomtzook/jsdl2'
+
+                    licenses {
+                        license {
+                            name = 'Apache License 2.0'
+                            url = ' http://www.apache.org/licenses/LICENSE-2.0'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'tomtzook'
+                            name = 'Tom Tzook'
+                            email = 'tomtzook@gmail.com'
+                        }
+                    }
+
+                    scm {
+                        connection = 'scm:git:git://github.com/tomtzook/jsdl2.git'
+                        developerConnection = 'scm:git:ssh://github.com/tomtzook/jsdl2.git'
+                        url = 'https://github.com/tomtzook/jsdl2'
+                    }
+                }
             }
         }
     }
