@@ -87,6 +87,22 @@ public class SDLGameController {
     public static native void close(long ptr);
 
     /**
+     * Gets an open device.
+     *
+     * @param id id of the device to get.
+     * @return a pointer to the device structure.
+     */
+    public static native long fromInstanceId(int id);
+
+    /**
+     * Gets the underlying joystick object associated with the device.
+     *
+     * @param ptr a pointer to the device structure.
+     * @return a pointer to the joystick device structure.
+     */
+    public static native long getJoystick(long ptr);
+
+    /**
      * Gets the value of an axis on an open device.
      *
      * @param ptr a pointer to the device structure.

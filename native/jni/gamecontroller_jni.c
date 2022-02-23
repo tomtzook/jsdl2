@@ -48,6 +48,27 @@ JNIEXPORT void JNICALL Java_sdl2_SDLGameController_close
     SDL_GameControllerClose(controller);
 }
 
+JNIEXPORT jlong JNICALL Java_sdl2_SDLGameController_fromInstanceId
+        (JNIEnv *env, jclass obj, jint id){
+    SDL_GameController* controller = SDL_GameControllerFromInstanceID(id);
+    if (NULL == controller) {
+        THROW_SDL_ERROR2(env, 0);
+    }
+
+    return (jlong) controller;
+}
+
+JNIEXPORT jlong JNICALL Java_sdl2_SDLGameController_getJoystick
+        (JNIEnv *env, jclass obj, jlong ptr){
+    SDL_GameController* controller = (SDL_GameController*) ptr;
+    SDL_Joystick* joystick = SDL_GameControllerGetJoystick(controller);
+    if (NULL == joystick) {
+        THROW_SDL_ERROR2(env, 0);
+    }
+
+    return (jlong) joystick;
+}
+
 JNIEXPORT jint JNICALL Java_sdl2_SDLGameController_getAxis
         (JNIEnv *env, jclass obj, jlong ptr, jobject axis_type){
     SDL_GameController* controller = (SDL_GameController*) ptr;
