@@ -104,12 +104,16 @@ task jsdl2All(type: Jar, dependsOn: tasks.assemble) {
 machines.customMachines.register("mingw-gcc-x86_x64") {
     it.toolchainFile.set(file('platforms/x86_64-mingw-gcc.cmake'))
 }
+machines.customMachines.register("linux-gnueabihf-gcc-arm") {
+    it.toolchainFile.set(file('platforms/arm-linux-gnueabihf-gcc.cmake'))
+}
 
 cmake {
     targets {
         sdl_jni {
             cmakeLists.set(file('native/CMakeLists.txt'))
-            targetMachines.addAll(machines.host, machines.customMachines.'mingw-gcc-x86_x64')
+            targetMachines.add(machines.host)
+            targetMachines.addAll(machines.customMachines)
         }
     }
 }
