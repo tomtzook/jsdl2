@@ -107,6 +107,9 @@ machines.customMachines.register("mingw-gcc-x86_x64") {
 machines.customMachines.register("linux-gnueabihf-gcc-arm") {
     it.toolchainFile.set(file('platforms/arm-linux-gnueabihf-gcc.cmake'))
 }
+machines.customMachines.register("linux-gcc-aarch64") {
+    it.toolchainFile.set(file('platforms/aarch64-linux-gnu-gcc.cmake'))
+}
 
 cmake {
     targets {
