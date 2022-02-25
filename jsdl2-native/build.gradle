@@ -66,7 +66,7 @@ publishing {
 }
 
 compileMachineTargets.each { machine ->
-    def artifactTask = tasks.register("zipNative${machine.name}", Jar) {
+    tasks.register("zipNative${machine.name}", Jar) {
         dependsOn(tasks.cmakeBuild)
 
         def outputDir = cmake.outputDir.dir("sdl_jni/${machine.name}")
@@ -78,49 +78,52 @@ compileMachineTargets.each { machine ->
             }
         }
 
-        archiveBaseName.set("${project.name}-jni-${machine.name}")
+        archiveBaseName.set("${project.name}-jni")
+        archiveClassifier.set(machine.name)
     }
+}
 
-    publishing {
-        publications {
-            "maven${machine.name}"(MavenPublication) {
-                artifactId = "jsdl2-jni-${machine.name}"
+publishing {
+    publications {
+        mavenJni(MavenPublication) {
+            artifactId = "jsdl2-jni"
 
-                artifact artifactTask
+            compileMachineTargets.each { machine ->
+                artifact tasks."zipNative${machine.name}"
+            }
 
-                pom {
-                    name = "jsdl2-jni-${machine.name}"
-                    description = 'Java Bindings for SDL2 (JNI)'
+            pom {
+                name = "jsdl2-jni"
+                description = 'Java Bindings for SDL2 (JNI)'
+                url = 'https://github.com/tomtzook/jsdl2'
+
+                licenses {
+                    license {
+                        name = 'Apache License 2.0'
+                        url = ' http://www.apache.org/licenses/LICENSE-2.0'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'tomtzook'
+                        name = 'Tom Tzook'
+                        email = 'tomtzook@gmail.com'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/tomtzook/jsdl2.git'
+                    developerConnection = 'scm:git:ssh://github.com/tomtzook/jsdl2.git'
                     url = 'https://github.com/tomtzook/jsdl2'
-
-                    licenses {
-                        license {
-                            name = 'Apache License 2.0'
-                            url = ' http://www.apache.org/licenses/LICENSE-2.0'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id = 'tomtzook'
-                            name = 'Tom Tzook'
-                            email = 'tomtzook@gmail.com'
-                        }
-                    }
-
-                    scm {
-                        connection = 'scm:git:git://github.com/tomtzook/jsdl2.git'
-                        developerConnection = 'scm:git:ssh://github.com/tomtzook/jsdl2.git'
-                        url = 'https://github.com/tomtzook/jsdl2'
-                    }
                 }
             }
         }
     }
+}
 
-    if (shouldSign()) {
-        signing {
-            sign publishing.publications."maven${machine.name}"
-        }
+if (shouldSign()) {
+    signing {
+        sign publishing.publications.mavenJni
     }
 }
