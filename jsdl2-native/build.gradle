@@ -21,9 +21,6 @@ plugins {
 apply plugin: 'io.github.tomtzook.gradle-cmake'
 apply from: rootProject.file('extras.gradle')
 
-group GROUP
-version VERSION
-
 machines.customMachines.register("windows-x86_x64") {
     it.toolchainFile.set(rootProject.file('platforms/x86_64-mingw-gcc.cmake'))
 }

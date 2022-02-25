@@ -6,9 +6,6 @@ plugins {
 
 apply from: rootProject.file('extras.gradle')
 
-group GROUP
-version VERSION
-
 sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
