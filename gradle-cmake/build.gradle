@@ -1,0 +1,56 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+    id 'com.gradle.plugin-publish' version '0.14.0'
+}
+
+pluginBundle {
+    website = 'https://github.com/tomtzook/gradle-cmake'
+    vcsUrl = 'https://github.com/tomtzook/gradle-cmake'
+    tags = ['native', 'cmake']
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+group = 'io.github.tomtzook'
+version = '1.0.0'
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.github.tomtzook:castle:2.0.0-beta.3'
+
+    testImplementation 'junit:junit:4.13'
+}
+
+gradlePlugin {
+    plugins {
+        'gradle-cmake' {
+            id = 'io.github.tomtzook.gradle-cmake'
+            displayName = 'Cmake for Gradle'
+            description = 'Integration for CMake projects with Gradle'
+            implementationClass = 'com.github.tomtzook.gcmake.GradleCmakePlugin'
+        }
+    }
+}
+
+sourceSets {
+    functionalTest {
+    }
+}
+
+gradlePlugin.testSourceSets(sourceSets.functionalTest)
+configurations.functionalTestImplementation.extendsFrom(configurations.testImplementation)
+
+tasks.register('functionalTest', Test) {
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
+    classpath = sourceSets.functionalTest.runtimeClasspath
+}
+
+tasks.named('check') {
+    dependsOn(tasks.functionalTest)
+}
