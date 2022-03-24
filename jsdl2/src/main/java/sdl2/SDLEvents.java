@@ -18,4 +18,11 @@ public class SDLEvents {
      *      the generated event is not supported by this binding.
      */
     public static native Event waitEventTimeout(int timeoutMs);
+
+    /**
+     * Retrieves the next pending event in the event queue.
+     *
+     * @return pending event, or NULL if no event is pending.
+     */
+    public static native Event pollEvent();
 }

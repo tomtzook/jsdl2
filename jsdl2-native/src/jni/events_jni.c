@@ -13,3 +13,13 @@ JNIEXPORT jobject JNICALL Java_sdl2_SDLEvents_waitEventTimeout
 
     return make_event_object(env, event);
 }
+
+JNIEXPORT jobject JNICALL Java_sdl2_SDLEvents_pollEvent
+        (JNIEnv *env, jclass obj){
+    SDL_Event event;
+    if (!SDL_PollEvent(&event)) {
+        return NULL;
+    }
+
+    return make_event_object(env, event);
+}
