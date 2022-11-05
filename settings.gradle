@@ -1,5 +1,2 @@
-
 include ':jsdl2'
 include ':jsdl2-native'
-
-includeBuild 'gradle-cmake'
