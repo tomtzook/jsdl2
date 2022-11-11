@@ -1,0 +1,13 @@
+dist: bionic
+language: java
+jdk:
+  - openjdk11
+
+services:
+  - docker
+
+before_script:
+  - docker run -t -d --entrypoint "/bin/sh" tomtzook/cross-compile:debian-sdl2-amd64
+
+script:
+  - ./gradlew clean build -Pcrosscompile
