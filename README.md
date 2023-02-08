@@ -1,5 +1,7 @@
 # jsdl2
 
+![maven central shield](https://img.shields.io/maven-central/v/com.github.tomtzook/jsdl2)
+
 Java bindings for SDL2
 
 ## Examples
